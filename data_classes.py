@@ -1,0 +1,53 @@
+from datetime import datetime, timezone
+
+class Run:
+    def __init__(self, run_id, game_id, category_id, player_id, time, run_date, time_submitted, time_verified, verifier_id, verified_status):
+        self.run_id = run_id
+        self.game_id = game_id
+        self.category_id = category_id
+        self.player_id = player_id
+        self.time = time
+        self.run_date = run_date
+        self.time_submitted = time_submitted
+        self.time_verified = time_verified
+        self.verifier_id = verifier_id
+        self.verified_status = verified_status
+        
+    @staticmethod
+    def create_from_json(run_data):
+        return Run(
+            run_id             = run_data['id'],
+            game_id            = run_data['game'],
+            category_id        = run_data['category'],
+            player_id          = run_data['players'][0]['id'],
+            time               = run_data['times']['primary_t'],
+            run_date           = datetime.strptime(run_data['date'], "%Y-%m-%d"),
+            time_submitted     = datetime.strptime(run_data['submitted'], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc),
+            time_verified      = run_data['status'].get('verify-date'),
+            verifier_id        = run_data['status']['examiner'],
+            verified_status    = run_data['status']['status']
+        )
+        
+class Game:
+    def __init__(game_id, name, abbreviation, release_date, platform_ids, moderator_ids, level_ids):
+        self.game_id = game_id
+        self.name = name
+        self.abbreviation = abbreviation
+        self.release_date = release_date
+        self.platform_ids = platform_ids
+        self.moderator_ids = moderator_ids
+        self.level_ids = level_ids
+        
+class Category:
+    def __init__(category_id, name, link, run_ids):
+        self.category_id = category_id
+        self.name = name
+        self.link = link
+        self.run_ids = run_ids
+        
+class Level:
+    def __init__(level_id, name, link):
+        self.level_id = level_id
+        self.name = name
+        self.link = link
+    
