@@ -1,35 +1,39 @@
+from dataclasses import dataclass
 from datetime import datetime, timezone
+from datetime import timedelta
 
-
+@dataclass
 class Run:
-    def __init__(self, run_id, game_id, category_id, player_id, time, run_date, time_submitted, time_verified, verifier_id, verified_status):
-        self.run_id = run_id
-        self.game_id = game_id
-        self.category_id = category_id
-        self.player_id = player_id
-        self.time = time
-        self.run_date = run_date
-        self.time_submitted = time_submitted
-        self.time_verified = time_verified
-        self.verifier_id = verifier_id
-        self.verified_status = verified_status
-        
+    run_id: str
+    run_time: float
+    run_time_formatted: timedelta
+    run_date: datetime
+    time_submitted: datetime
+    time_verified: datetime
+    verified_status: str
+    game_id: str
+    category_id: str
+    player_id: str
+    verifier_id: str        
+    
     @staticmethod
     def create_from_json(run_data):
         return Run(
-            run_id             = run_data["id"],
-            game_id            = run_data["game"],
-            category_id        = run_data["category"],
-            player_id          = run_data["players"][0]["id"],
-            time               = run_data["times"]["primary_t"],
-            run_date           = datetime.strptime(run_data["date"], "%Y-%m-%d"),
-            time_submitted     = datetime.strptime(run_data["submitted"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc),
-            time_verified      = run_data["status"].get("verify-date"),
-            verifier_id        = run_data["status"]["examiner"],
-            verified_status    = run_data["status"]["status"]
+            run_time              = run_data['times']['primary_t'],
+            run_time_formatted    = timedelta(seconds=run_data['times']['primary_t']),
+            run_date              = datetime.strptime(run_data['date'], '%Y-%m-%d'),
+            time_submitted        = datetime.strptime(run_data['submitted'], '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc),
+            time_verified         = run_data['status'].get('verify-date'),
+            verified_status       = run_data['status']['status'],
+            run_id                = run_data['id'],
+            game_id               = run_data['game'],
+            category_id           = run_data['category'],
+            player_id             = run_data['players'][0]['id'],
+            verifier_id           = run_data['status']['examiner']
         )
         
         
+@dataclass
 class Game:
     def __init__(game_id, name, abbreviation, release_date, platform_ids, moderator_ids, level_ids):
         self.game_id = game_id
