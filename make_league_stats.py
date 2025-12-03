@@ -130,7 +130,7 @@ if __name__ == '__main__':
     make_files_for_runs(invalid_runs, "invalid_runs")
     make_files_for_runs(runs, "runs")
     
-    sort_and_save_names(player_names, "player_names.json")
     sort_and_save_names(game_names, "game_names.json")
     sort_and_save_names(category_names, "category_names.json")
+    sort_and_save_names(player_names, "player_names.json")
     
