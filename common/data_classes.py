@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from datetime import timedelta
 
@@ -35,29 +35,29 @@ class Run:
         
 @dataclass
 class Game:
-    def __init__(game_id, name, abbreviation, release_date, platform_ids, moderator_ids, level_ids):
-        self.game_id = game_id
-        self.name = name
-        self.abbreviation = abbreviation
-        self.release_date = release_date
-        self.platform_ids = platform_ids
-        self.moderator_ids = moderator_ids
-        self.level_ids = level_ids
+    game_id: str
+    name: str
+    abbreviation: str
+    release_date: datetime
+    platform_ids: list[str] = field(default_factory=list)
+    platform_ids: list[str] = field(default_factory=list)
+    moderator_ids: list[str] = field(default_factory=list)
+    level_ids: list[str] = field(default_factory=list)
         
         
+@dataclass
 class Category:
-    def __init__(category_id, name, link, run_ids):
-        self.category_id = category_id
-        self.name = name
-        self.link = link
-        self.run_ids = run_ids
+    category_id: str
+    name: str
+    link: str
+    run_ids: list[str] = field(default_factory=list)
         
-        
+
+@dataclass
 class Level:
-    def __init__(level_id, name, link):
-        self.level_id = level_id
-        self.name = name
-        self.link = link
+    level_id: str
+    name: str
+    link: str
 
 
 @dataclass

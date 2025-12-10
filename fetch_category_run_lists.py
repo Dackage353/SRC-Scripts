@@ -1,7 +1,4 @@
-import src_helper
-import json
-import file_handler
-from pathlib import Path
+import common.file_handler as file_handler
 
 # on srcom, click on the category name, the 'x=_____' in the url is the id
 category_ids = [
@@ -13,4 +10,4 @@ category_ids = [
 
 if __name__ == '__main__':
     for category_id in category_ids:
-        data = file_handler.fetch_leaderboard_data(category_id)
+        file_handler.fetch_category_run_list(category_id)

@@ -1,7 +1,8 @@
-import src_helper
-import json
-import atexit
 from pathlib import Path
+import atexit
+import common.src_helper as src_helper
+import json
+import pandas as pd
 
 CATEGORY_DIRECTORY = 'category_dump'
 LEADERBOARD_DIRECTORY = 'leaderboard_dump'
@@ -16,6 +17,7 @@ def load_names(file_name):
             return json.load(file)
     
     return {}
+
 
 def load_json(path):
     with path.open('r') as file:
@@ -33,6 +35,14 @@ def make_text_file(text, file_name):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text)
     
+
+def check_for_missing_info_from_runs(runs):
+    for run in runs:
+        check_game_name(run.game_id)
+        check_category_name(run.category_id)
+        check_player_name(run.player_id)
+        check_player_name(run.verifier_id)
+
 
 def check_game_name(game_id):
     if game_id not in game_names:
@@ -103,6 +113,7 @@ def fetch_leaderboard_data(category_id):
         dump_json(data, path)
         return data
 
+
 def fetch_category_run_list(category_id):
     path = Path(f'{CATEGORY_RUN_LIST_DIRECTORY}/{category_id}.json')
 
@@ -115,6 +126,27 @@ def fetch_category_run_list(category_id):
 
         dump_json(data, path)
         return data
+
+
+def get_data_frame_for_run_list(runs):
+    run_dicts = [vars(run) for run in runs]
+    df = pd.DataFrame(run_dicts)
+    
+    df['game_name'] = df['game_id'].map(game_names)
+    df['category_name'] = df['category_id'].map(category_names)
+    df['player_name'] = df['player_id'].map(player_names)
+    df['verifier_name'] = df['verifier_id'].map(player_names)
+    
+    df = df.sort_values(['game_name', 'category_name', 'player_name'], ascending=[True, True, True])
+    
+    return df
+
+
+def make_csv_file_from_data_frame(df, path):
+    path = Path(str(path))
+    path.parent.mkdir(parents=True, exist_ok=True)
+    df.to_csv(str(path), index=False)
+
 
 game_names = load_names('game_names.json')
 category_names = load_names('category_names.json')
