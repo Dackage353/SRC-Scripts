@@ -1,4 +1,7 @@
 output/
+leaderboard_dump/
+category_dump/
+category_run_list_dump/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
