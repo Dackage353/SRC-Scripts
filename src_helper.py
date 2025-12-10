@@ -34,6 +34,10 @@ def get_wr_for_game_category(game_id, category):
     return f'https://www.speedrun.com/api/v1/leaderboards/{game_id}/category/{category}?top=1&embed=players'
 
 
+def get_category_run_list(category_id):
+    return f'https://www.speedrun.com/api/v1/runs?category={category_id}&max=200'
+
+
 def get_runs_for_game(game_id):
     return f'https://www.speedrun.com/api/v1/runs?game={game_id}&status=verified&orderby=verify-date&direction=desc'
 

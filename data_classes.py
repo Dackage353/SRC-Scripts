@@ -58,4 +58,9 @@ class Level:
         self.level_id = level_id
         self.name = name
         self.link = link
-    
+
+
+@dataclass
+class Leaderboard:
+    game_id: str
+    category_id: str
