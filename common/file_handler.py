@@ -4,7 +4,7 @@ import common.src_helper as src_helper
 import json
 import pandas as pd
 
-CATEGORY_DIRECTORY = 'category_dump'
+CATEGORY_DIRECTORY = 'category_info_dump'
 LEADERBOARD_DIRECTORY = 'leaderboard_dump'
 CATEGORY_RUN_LIST_DIRECTORY = 'category_run_list_dump'
 REFERENCE_DIRECTORY = 'reference'
@@ -63,11 +63,17 @@ def check_category_name(category_id, data=None):
 
 
 def check_player_name(player_id):
-    if player_id not in player_names:
-        data = src_helper.request_src(src_helper.get_user(player_id))['data']
-        name = data['names']['international']
-        player_names[player_id] = name
-        print(f'fetched name for {player_id} - {name}')
+    if player_id and player_id not in player_names:
+        request = src_helper.request_src_no_error(src_helper.get_user(player_id))
+
+        if request:
+            data = request['data']
+            name = data['names']['international']
+            player_names[player_id] = name
+            print(f'fetched name for {player_id} - {name}')
+        else:
+            player_names[player_id] = ""
+            print(f'fetched player id was missing - {player_id}')
 
 
 def save_reference_names():
@@ -80,7 +86,7 @@ def save_reference_names():
     dump_json(sorted_player_names, f'{REFERENCE_DIRECTORY}/player_names.json')
 
 
-def fetch_category_data(category_id):
+def fetch_category_info(category_id):
     path = Path(f'{CATEGORY_DIRECTORY}/{category_id}.json')
     
     if path.exists():
@@ -94,13 +100,13 @@ def fetch_category_data(category_id):
         return data
 
 
-def fetch_leaderboard_data(category_id):
+def fetch_leaderboard(category_id):
     path = Path(f'{LEADERBOARD_DIRECTORY}/{category_id}.json')
     
     if path.exists():
         return load_json(path)
     else:
-        category_data = fetch_category_data(category_id)
+        category_data = fetch_category_info(category_id)
 
         leaderboard_link = None
         for link in category_data['links']:
@@ -108,7 +114,7 @@ def fetch_leaderboard_data(category_id):
                 leaderboard_link = link['uri']
                 break
 
-        data = src_helper.request_src(leaderboard_link)['data']
+        data = src_helper.request_src_list(leaderboard_link)['data']
         print(f'fetched leaderboard data for {category_id} - {category_names[category_id]}')
         dump_json(data, path)
         return data
@@ -120,7 +126,8 @@ def fetch_category_run_list(category_id):
     if path.exists():
         return load_json(path)
     else:
-        data = src_helper.request_src(src_helper.get_category_run_list(category_id))['data']
+        data = src_helper.request_src_list(src_helper.get_category_run_list_url(category_id))
+
         check_category_name(category_id)
         print(f'fetched category run list for {category_id} - {category_names[category_id]}')
 
@@ -129,8 +136,8 @@ def fetch_category_run_list(category_id):
 
 
 def get_data_frame_for_run_list(runs):
-    run_dicts = [vars(run) for run in runs]
-    df = pd.DataFrame(run_dicts)
+    #run_dicts = [vars(run) for run in runs]
+    df = pd.DataFrame(runs)
     
     df['game_name'] = df['game_id'].map(game_names)
     df['category_name'] = df['category_id'].map(category_names)

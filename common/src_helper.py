@@ -34,8 +34,8 @@ def get_wr_for_game_category(game_id, category):
     return f'https://www.speedrun.com/api/v1/leaderboards/{game_id}/category/{category}?top=1&embed=players'
 
 
-def get_category_run_list(category_id):
-    return f'https://www.speedrun.com/api/v1/runs?category={category_id}&max=200'
+def get_category_run_list_url(category_id):
+    return f'https://www.speedrun.com/api/v1/runs?category={category_id}'
 
 
 def get_runs_for_game(game_id):
@@ -223,6 +223,65 @@ def request_src(url):
     else:
         return None
 
+
+def request_src_list(base_url):
+    items = []
+    max_per_request = 200
+    offset = 0
+
+    while True:
+        url = f"{base_url}&max={max_per_request}&offset={offset}"
+        resp = requests.get(url, headers=_h)
+        
+        if resp.status_code != 200:
+            print(f"Request failed with status code {resp.status_code}")
+            break
+        
+        data = resp.json()
+        runs = data.get("data", [])
+        
+        if not runs:
+            break
+        
+        items.extend(runs)
+        
+        offset += max_per_request
+        time.sleep(_sleep_period)
+
+    return items
+
+
+def request_src_no_error(url):
+    err_lim = 5
+    err_cnt = 1
+    request_finished = False
+    resp = None
+
+    while not request_finished and err_cnt <= err_lim:
+        try:
+            resp = requests.get(url, headers=_h)
+            if resp.status_code != 503:
+                request_finished = True
+            err_cnt += 1
+        except requests.exceptions.RequestException as e:
+            if err_cnt == err_lim:
+                break
+            err_cnt += 1
+            print(f'sleeping for {_retry_sleep} before retry')
+            time.sleep(_retry_sleep)
+            print('retrying')
+
+    if err_cnt >= err_lim:
+        print(f'err_cnt greater than err_limit {err_cnt} >= {err_lim}')
+        
+    time.sleep(_sleep_period)
+    if resp is not None and (resp.status_code == 200 or resp.status_code == 201):
+        return resp.json()
+    elif resp.status_code != 200 and resp.status_code != 201:
+        if (resp.status_code == 400 and resp.json()[
+            'message'] == 'The selected category is for individual-level runs, but no level was selected.') \
+                or resp.status_code == 404:
+            return None
 
 # requests
 def post_src(url, body, api_key):

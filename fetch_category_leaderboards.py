@@ -10,4 +10,4 @@ category_ids = [
 
 if __name__ == '__main__':
     for category_id in category_ids:
-        file_handler.fetch_leaderboard_data(category_id)
+        file_handler.fetch_leaderboard(category_id)
