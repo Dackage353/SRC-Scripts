@@ -8,6 +8,7 @@ CATEGORY_DIRECTORY = 'category_info_dump'
 LEADERBOARD_DIRECTORY = 'leaderboard_dump'
 CATEGORY_RUN_LIST_DIRECTORY = 'category_run_list_dump'
 REFERENCE_DIRECTORY = 'reference'
+ROM_HACK_LIST_DIRECTORY = 'dump'
 
 def load_names(file_name):
     path = Path(f'{REFERENCE_DIRECTORY}/{file_name}')
@@ -38,42 +39,52 @@ def make_text_file(text, file_name):
 
 def check_for_missing_info_from_runs(runs):
     for run in runs:
-        check_game_name(run.game_id)
-        check_category_name(run.category_id)
-        check_player_name(run.player_id)
-        check_player_name(run.verifier_id)
+        fetch_game_name(run.game_id)
+        fetch_category_name(run.category_id)
+        fetch_player_name(run.player_id)
+        fetch_player_name(run.verifier_id)
 
 
-def check_game_name(game_id):
-    if game_id not in game_names:
-        data = src_helper.request_src(src_helper.get_game(game_id))['data']
-        name = data['names']['international']
-        game_names[game_id] = name
-        print(f'fetched name for {game_id} - {name}')
-
-
-def check_category_name(category_id, data=None):
-    if category_id not in category_names:
-        if data is None:
-            data = src_helper.request_src(src_helper.get_category(category_id))['data']
-            name = data['name']
-            print(f'fetched name for {category_id} - {name}')
-
-        category_names[category_id] = data['name']
-
-
-def check_player_name(player_id):
-    if player_id and player_id not in player_names:
-        request = src_helper.request_src_no_error(src_helper.get_user(player_id))
-
-        if request:
-            data = request['data']
+def fetch_game_name(game_id):
+    if game_id:
+        if game_id not in game_names:
+            data = src_helper.request_src(src_helper.get_game_url(game_id))['data']
             name = data['names']['international']
-            player_names[player_id] = name
-            print(f'fetched name for {player_id} - {name}')
-        else:
-            player_names[player_id] = ""
-            print(f'fetched player id was missing - {player_id}')
+            game_names[game_id] = name
+            print(f'fetched name for {game_id} - {name}')
+
+        return game_names[game_id]
+
+
+def fetch_category_name(category_id, data=None):
+    if category_id:
+        if category_id not in category_names:
+            if data is None:
+                data = src_helper.request_src(src_helper.get_category_url(category_id))['data']
+                name = data['name']
+                print(f'fetched name for {category_id} - {name}')
+
+            name = data['name']
+            category_names[category_id] = name
+            
+        return category_names[category_id]
+
+
+def fetch_player_name(player_id):
+    if player_id:
+        if player_id not in player_names:
+            request = src_helper.request_src_no_error(src_helper.get_user_url(player_id))
+
+            if request:
+                data = request['data']
+                name = data['names']['international']
+                player_names[player_id] = name
+                print(f'fetched name for {player_id} - {name}')
+            else:
+                player_names[player_id] = ""
+                print(f'fetched player id was missing - {player_id}')
+
+        return player_names[player_id] 
 
 
 def save_reference_names():
@@ -92,8 +103,8 @@ def fetch_category_info(category_id):
     if path.exists():
         return load_json(path)
     else:
-        data = src_helper.request_src(src_helper.get_category(category_id))['data']
-        check_category_name(category_id, data)
+        data = src_helper.request_src(src_helper.get_category_url(category_id))['data']
+        fetch_category_name(category_id, data)
         print(f'fetched category data for {category_id} - {category_names[category_id]}')
 
         dump_json(data, path)
@@ -115,8 +126,9 @@ def fetch_leaderboard(category_id):
                 break
 
         data = src_helper.request_src_list(leaderboard_link)['data']
-        print(f'fetched leaderboard data for {category_id} - {category_names[category_id]}')
         dump_json(data, path)
+        
+        print(f'fetched leaderboard data for {category_id} - {category_names[category_id]}')
         return data
 
 
@@ -128,15 +140,28 @@ def fetch_category_run_list(category_id):
     else:
         data = src_helper.request_src_list(src_helper.get_category_run_list_url(category_id))
 
-        check_category_name(category_id)
-        print(f'fetched category run list for {category_id} - {category_names[category_id]}')
-
+        fetch_category_name(category_id)
         dump_json(data, path)
+        
+        print(f'fetched category run list for {category_id} - {category_names[category_id]}')
         return data
 
 
+def fetch_rom_hack_info_list():
+    path = Path(f'{ROM_HACK_LIST_DIRECTORY}/rom_hacks.json')
+        
+    if path.exists():
+        return load_json(path)
+    else:
+        link = src_helper.get_detailed_rom_hacks_url()
+        data = src_helper.request_src_list(link)
+
+        dump_json(data, path)
+        print(f'fetched rom hack list of size {len(data)}')
+        return data
+
 def get_data_frame_for_run_list(runs):
-    #run_dicts = [vars(run) for run in runs]
+    check_for_missing_info_from_runs(runs)
     df = pd.DataFrame(runs)
     
     df['game_name'] = df['game_id'].map(game_names)

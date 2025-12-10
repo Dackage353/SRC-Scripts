@@ -37,7 +37,6 @@ def process_category_run_list(category_id):
     
 def make_files_for_runs(runs, file_name):
     df = file_handler.get_data_frame_for_run_list(runs)
-
     file_handler.make_csv_file_from_data_frame(df, f'output/{file_name}.csv')
     
     file_handler.make_text_file(df.groupby('game_name').size().to_string(header=False), f'output/{file_name} - runs per game.txt')
@@ -49,8 +48,6 @@ def make_files_for_runs(runs, file_name):
 if __name__ == '__main__':    
     for category_id in category_ids:
         process_category_run_list(category_id)
-
-    file_handler.check_for_missing_info_from_runs(runs)
     
     make_files_for_runs(valid_runs, 'valid_runs')
     make_files_for_runs(invalid_runs, 'invalid_runs')

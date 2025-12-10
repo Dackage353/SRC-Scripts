@@ -1,5 +1,5 @@
-import common.file_handler as file_handler
 import common.data_classes as data_classes
+import common.file_handler as file_handler
 
 # on srcom, click on the category name, the 'x=_____' in the url is the id
 category_ids = [
@@ -19,6 +19,5 @@ if __name__ == '__main__':
             run = data_classes.Run.create_from_json(run_data)
             runs.append(run)
 
-        file_handler.check_for_missing_info_from_runs(runs)
         df = file_handler.get_data_frame_for_run_list(runs)
         file_handler.make_csv_file_from_data_frame(df, f'output/run-list_{category_id}.csv')
