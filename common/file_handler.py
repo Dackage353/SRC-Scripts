@@ -41,8 +41,8 @@ def check_for_missing_info_from_runs(runs):
     for run in runs:
         fetch_game_name(run.game_id)
         fetch_category_name(run.category_id)
-        fetch_player_name(run.player_id)
-        fetch_player_name(run.verifier_id)
+        fetch_user_name(run.player_id)
+        fetch_user_name(run.verifier_id)
 
 
 def fetch_game_name(game_id):
@@ -70,31 +70,33 @@ def fetch_category_name(category_id, data=None):
         return category_names[category_id]
 
 
-def fetch_player_name(player_id):
-    if player_id:
-        if player_id not in player_names:
-            request = src_helper.request_src_no_error(src_helper.get_user_url(player_id))
+def fetch_user_name(user_id):
+    if user_id:
+        if user_id not in user_names:
+            request = src_helper.request_src_no_error(src_helper.get_user_url(user_id))
 
             if request:
                 data = request['data']
                 name = data['names']['international']
-                player_names[player_id] = name
-                print(f'fetched name for {player_id} - {name}')
+                user_names[user_id] = name
+                print(f'fetched name for {user_id} - {name}')
             else:
-                player_names[player_id] = ""
-                print(f'fetched player id was missing - {player_id}')
+                user_names[user_id] = ""
+                print(f'fetched user id was missing - {user_id}')
 
-        return player_names[player_id] 
+        return user_names[user_id] 
 
 
 def save_reference_names():
     sorted_game_names = dict(sorted(game_names.items(), key=lambda item: item[1]))
     sorted_category_names = dict(sorted(category_names.items(), key=lambda item: item[1]))
-    sorted_player_names = dict(sorted(player_names.items(), key=lambda item: item[1]))
+    sorted_level_names = dict(sorted(level_names.items(), key=lambda item: item[1]))
+    sorted_user_names = dict(sorted(user_names.items(), key=lambda item: item[1]))
     
     dump_json(sorted_game_names, f'{REFERENCE_DIRECTORY}/game_names.json')
     dump_json(sorted_category_names, f'{REFERENCE_DIRECTORY}/category_names.json')
-    dump_json(sorted_player_names, f'{REFERENCE_DIRECTORY}/player_names.json')
+    dump_json(sorted_level_names, f'{REFERENCE_DIRECTORY}/level_names.json')
+    dump_json(sorted_user_names, f'{REFERENCE_DIRECTORY}/user_names.json')
 
 
 def fetch_category_info(category_id):
@@ -156,9 +158,24 @@ def fetch_rom_hack_info_list():
         link = src_helper.get_detailed_rom_hacks_url()
         data = src_helper.request_src_list(link)
 
+        add_info_from_game_data_list(data)
         dump_json(data, path)
         print(f'fetched rom hack list of size {len(data)}')
         return data
+
+
+def add_info_from_game_data_list(data):
+    global game_names, category_names, level_names
+
+    for game in data:
+        game_names[game['id']] = game['names']['international']
+
+        for category in game['categories']['data']:
+            category_names[category['id']] = category['name']
+            
+        for level in game['levels']['data']:
+            level_names[level['id']] = level['name']
+
 
 def get_data_frame_for_run_list(runs):
     check_for_missing_info_from_runs(runs)
@@ -166,8 +183,8 @@ def get_data_frame_for_run_list(runs):
     
     df['game_name'] = df['game_id'].map(game_names)
     df['category_name'] = df['category_id'].map(category_names)
-    df['player_name'] = df['player_id'].map(player_names)
-    df['verifier_name'] = df['verifier_id'].map(player_names)
+    df['player_name'] = df['player_id'].map(user_names)
+    df['verifier_name'] = df['verifier_id'].map(user_names)
     
     df = df.sort_values(['game_name', 'category_name', 'player_name'], ascending=[True, True, True])
     
@@ -182,6 +199,7 @@ def make_csv_file_from_data_frame(df, path):
 
 game_names = load_names('game_names.json')
 category_names = load_names('category_names.json')
-player_names = load_names('player_names.json')
+level_names = load_names('level_names.json')
+user_names = load_names('user_names.json')
 
 atexit.register(save_reference_names)

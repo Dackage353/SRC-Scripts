@@ -20,7 +20,7 @@ if __name__ == '__main__':
 
         for mod in game['moderators']:
             if mod not in main_mods:
-                name = file_handler.fetch_player_name(mod)
+                name = file_handler.fetch_user_name(mod)
                 potential_incorrect_mods.append(name)
 
         if potential_incorrect_mods:
