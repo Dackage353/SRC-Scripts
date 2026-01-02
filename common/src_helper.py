@@ -58,11 +58,11 @@ def get_leaderboard_for_game_level_category(game_id, level_id,category):
     return f'https://www.speedrun.com/api/v1/leaderboards/{game_id}/level/{level_id}/{category}?embed=players'
 
 
-def get_detailed_rom_hacks_url(max = 200):
-    return f'https://www.speedrun.com/api/v1/series/0499o64v/games?max={max}&embed=categories,variables,levels'
+def get_series_info_url(series='0499o64v', max=200):
+    return f'https://www.speedrun.com/api/v1/series/{series}/games?max={max}&embed=categories,variables,levels'
 
 
-def get_games_and_categories(max = 200):
+def get_games_and_categories(max=200):
     return 'https://www.speedrun.com/api/v1/games?embed=categories&max={max}'
 
 
@@ -152,6 +152,9 @@ def request_src_list(base_url):
             break
         items.extend(data_items)
         
+        if 'pagination' not in data:
+            break
+
         url = None
         for page in data['pagination']['links']:
             if page['rel'] == 'next':
