@@ -142,3 +142,19 @@ def fetch_category_run_list_data(category_id, force_fetch=False):
         
         print(f'fetched category run list for {category_id} - {reference.category_names[category_id]}')
         return data
+
+
+def fetch_all_fullgame_categories(force_fetch=False):
+    data = fetch_all_hack_info(force_fetch)
+    fullgame_categories = []
+
+    for hack in data:
+        categories_data = hack.get('categories', {}).get('data')
+
+        categories = data_handler.create_category_info_from_data(categories_data)
+        fullgame_categories.extend([category for category in categories if category.type == 'per-game'])
+
+    return fullgame_categories
+
+
+    

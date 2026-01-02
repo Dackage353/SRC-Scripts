@@ -75,7 +75,7 @@ class RunInfo:
         players = data.get('players', [])
         player_ids = [player.get('id') for player in players if player.get('rel') == 'user']
         self.single_player_id = None
-        self.multiple_player_ids = []
+        self.multiple_player_ids = None
 
         if len(player_ids) == 1:
             self.single_player_id = player_ids[0]
@@ -88,7 +88,8 @@ class RunInfo:
         if self.single_player_id:
             player_ids.append(self.single_player_id)
 
-        player_ids.extend(self.multiple_player_ids)
+        if self.multiple_player_ids:
+            player_ids.extend(self.multiple_player_ids)
 
         return player_ids
 
@@ -197,6 +198,7 @@ class CategoryInfo:
         self.is_miscellaneous    = data.get('miscellaneous')
         self.name                = data.get('name')
         self.rules               = data.get('rules')
+        self.type                = data.get('type')
         self.weblink             = data.get('weblink')
 
         player_count_info = data.get('players', {})

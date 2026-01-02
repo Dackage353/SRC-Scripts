@@ -1,0 +1,23 @@
+from common import fetch_handler
+
+
+FORCE_FETCH = False
+
+
+if __name__ == '__main__':
+    categories = fetch_handler.fetch_all_fullgame_categories(FORCE_FETCH)
+
+    current_game_id = ''
+    for category in categories:
+        if current_game_id != category.game_id:
+            current_game_id = category.game_id
+            
+            if current_game_id != '':
+                print('')
+            
+            game_name = fetch_handler.fetch_game_name(category.game_id)
+            print(game_name)
+
+        print(category.name)
+
+    print(f'\nprinted {len(categories)} categories')

@@ -35,8 +35,10 @@ https://github.com/aussieadam/SM64RomhackSRC
 - set the category id's, start and end date, then run the script
 - the output will be in the "output" folder
 
-## print_hack_list.py
-- prints the name of every hack
-
-## print_non_main_mods.py
-- finds and prints the non-main mods in every hack
+## Self explanatory
+- print_fullgame_categories_without_rules.py
+- print_fullgame_category_list.py
+- print_hack_list.py
+- print_hack_platform_count.py
+- print_hacks_without_levels.py
+- print_non_main_mods.py
