@@ -17,3 +17,4 @@ if __name__ == '__main__':
 
     for hack in hacks:
         print(hack.get_simple_text())
+        print('\n\n')
