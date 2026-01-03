@@ -58,7 +58,7 @@ def get_leaderboard_for_game_level_category(game_id, level_id,category):
     return f'https://www.speedrun.com/api/v1/leaderboards/{game_id}/level/{level_id}/{category}?embed=players'
 
 
-def get_series_info_url(series='0499o64v', max=200):
+def get_series_info_url(series, max=200):
     return f'https://www.speedrun.com/api/v1/series/{series}/games?max={max}&embed=categories,variables,levels'
 
 

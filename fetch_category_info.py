@@ -1,4 +1,4 @@
-from common import data_handler, fetch_handler, file_helper, reference
+from common import fetch_handler, file_helper, reference, src_helper, tool
 
 
 FORCE_FETCH = False
@@ -15,6 +15,6 @@ if __name__ == '__main__':
         data = fetch_handler.fetch_category_info(category_id, FORCE_FETCH)
         category_data.append(data)
 
-    categories = data_handler.create_category_info_from_data(category_data)
+    categories = tool.create_category_info_from_data(category_data)
 
     print(categories)

@@ -1,4 +1,4 @@
-from common import data_handler, fetch_handler, file_helper, reference
+from common import *
 
 
 FORCE_FETCH = False

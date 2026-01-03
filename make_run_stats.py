@@ -1,5 +1,5 @@
-from common import data_handler, fetch_handler, file_helper, reference
-from common.data_handler import RunInfo
+from common import fetch_handler, file_helper, reference, src_helper, tool
+from classes import CategoryInfo, GameInfo, RunInfo
 
 
 FORCE_FETCH = False
@@ -23,7 +23,7 @@ if __name__ == '__main__':
         print(f'processed run list for {category.get_game_name()} - {category.name}')
 
 
-    df = data_handler.get_data_frame_for_run_list(runs)
+    df = tool.get_data_frame_for_run_list(runs)
 
     file_name = 'all_runs'
     file_helper.make_csv_file_from_data_frame(df, f'output/{file_name}.csv')
@@ -33,7 +33,7 @@ if __name__ == '__main__':
     file_helper.make_single_sort_csv(df, f'output/{file_name} - runs per verifier.txt', 'verifier_id', 'verifier_name', reference.user_names, False)
     
     all_pairs = [(category.game_id, category.id) for category in categories]
-    file_helper.make_double_sort_csv2(df, f'output/{file_name} - runs per category.csv', 'game_id', 'category_id', 'game_name', 'category_name', reference.game_names, reference.category_names, all_pairs)
+    file_helper.make_double_sort_csv(df, f'output/{file_name} - runs per category.csv', 'game_id', 'category_id', 'game_name', 'category_name', reference.game_names, reference.category_names, all_pairs)
 
 
     

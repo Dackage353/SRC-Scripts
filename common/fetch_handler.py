@@ -1,7 +1,4 @@
-from common import data_handler
-from common import file_helper
-from common import reference
-from common import src_helper
+from common import file_helper, reference, src_helper, tool, constants
 from pathlib import Path
 
 
@@ -46,30 +43,30 @@ def fetch_user_name(user_id):
         return reference.user_names[user_id]
 
 
-def fetch_all_hack_names(force_fetch=False):
-    data = fetch_all_hack_info(force_fetch)
-    hacks = data_handler.create_game_info_from_data(data)
+def fetch_all_series_game_names(series=constants.DEFAULT_SERIES, force_fetch=False):
+    data = fetch_all_series_game_info(series, force_fetch)
+    hacks = tool.create_game_info_from_data(data)
 
     return [hack.name_international for hack in hacks]
 
 
-def fetch_all_hack_info(force_fetch=False):
-    path = Path(f'{file_helper.HACK_INFO_DIRECTORY}/{file_helper.ALL_HACK_INFO_FILE_NAME}')
+def fetch_all_series_game_info(series=constants.DEFAULT_SERIES, force_fetch=False):
+    path = Path(f'{constants.HACK_INFO_DIRECTORY}/{constants.ALL_HACK_INFO_FILE_NAME}')
         
     if not force_fetch and path.exists():
         return file_helper.load_json(path)
     else:
-        link = src_helper.get_series_info_url()
+        link = src_helper.get_series_info_url(series)
         data = src_helper.request_src_list(link)
 
         reference.add_info_from_game_data_list(data)
         file_helper.dump_json(data, path)
-        print(f'fetched hack list of size {len(data)}')
+        print(f'fetched game list of size {len(data)}')
         return data
 
 
 def fetch_game_info(game_ids, force_fetch=False):
-    hacks = fetch_all_hack_info(force_fetch)
+    hacks = fetch_all_series_game_info(force_fetch)
 
     return [
         hack for hack in hacks
@@ -78,7 +75,7 @@ def fetch_game_info(game_ids, force_fetch=False):
 
 
 def fetch_category_info(category_id, force_fetch=False):
-    path = Path(f'{file_helper.CATEGORY_DIRECTORY}/{category_id}.json')
+    path = Path(f'{constants.CATEGORY_DIRECTORY}/{category_id}.json')
 
     if not force_fetch and path.exists():
         return file_helper.load_json(path)
@@ -97,7 +94,7 @@ def fetch_category_leaderboards(category_ids, force_fetch=False):
 
 
 def fetch_leaderboard(category_id, force_fetch=False):
-    path = Path(f'{file_helper.LEADERBOARD_DIRECTORY}/{category_id}.json')
+    path = Path(f'{constants.LEADERBOARD_DIRECTORY}/{category_id}.json')
     
     if not force_fetch and path.exists():
         return file_helper.load_json(path)
@@ -123,14 +120,14 @@ def fetch_leaderboard(category_id, force_fetch=False):
 def fetch_category_run_lists(category_ids, force_fetch=False):
     for category_id in category_ids:
         data = fetch_category_run_list_data(category_id, force_fetch)
-        runs = data_handler.create_run_info_from_data(data)
+        runs = tool.create_run_info_from_data(data)
 
-        df = data_handler.get_data_frame_for_run_list(runs)
+        df = tool.get_data_frame_for_run_list(runs)
         file_helper.make_csv_file_from_data_frame(df, f'output/run-list_{category_id}.csv')
 
 
 def fetch_category_run_list_data(category_id, force_fetch=False):
-    path = Path(f'{file_helper.CATEGORY_RUN_LIST_DIRECTORY}/{category_id}.json')
+    path = Path(f'{constants.CATEGORY_RUN_LIST_DIRECTORY}/{category_id}.json')
 
     if not force_fetch and path.exists():
         return file_helper.load_json(path)
@@ -145,13 +142,13 @@ def fetch_category_run_list_data(category_id, force_fetch=False):
 
 
 def fetch_all_fullgame_categories(force_fetch=False):
-    data = fetch_all_hack_info(force_fetch)
+    data = fetch_all_series_game_info(force_fetch)
     fullgame_categories = []
 
     for hack in data:
         categories_data = hack.get('categories', {}).get('data')
 
-        categories = data_handler.create_category_info_from_data(categories_data)
+        categories = tool.create_category_info_from_data(categories_data)
         fullgame_categories.extend([category for category in categories if category.type == 'per-game'])
 
     return fullgame_categories

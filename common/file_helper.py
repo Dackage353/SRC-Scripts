@@ -3,16 +3,6 @@ import json
 
 import pandas as pd
 
-
-CATEGORY_DIRECTORY = 'category_info_dump'
-CATEGORY_RUN_LIST_DIRECTORY = 'category_run_list_dump'
-LEADERBOARD_DIRECTORY = 'leaderboard_dump'
-REFERENCE_DIRECTORY = 'reference'
-HACK_INFO_DIRECTORY = 'hack_info'
-
-ALL_HACK_INFO_FILE_NAME = 'all_hack_info.json'
-
-
 def load_json(path):
     path = Path(str(path))
 
@@ -36,6 +26,7 @@ def make_csv_file_from_data_frame(df, path, index=False):
     path = Path(str(path))
     path.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(str(path), index=index)
+
 
 def make_single_sort_csv(df, path, sort_id, sort_name, ref, add_empties=False):
     counts = (
@@ -63,26 +54,7 @@ def make_single_sort_csv(df, path, sort_id, sort_name, ref, add_empties=False):
 
     out.to_csv(path, index=False)
 
-def make_double_sort_csv(df, path, sort1_id, sort2_id, sort1_name, sort2_name, ref1, ref2):
-    out = (
-        df
-        .groupby([sort1_id, sort2_id])
-        .size()
-        .reset_index(name='count')
-    )
-
-    out[sort1_name] = out[sort1_id].map(ref1)
-    out[sort2_name] = out[sort2_id].map(ref2)
-
-    out = (
-        out
-        [[sort1_name, sort2_name, 'count']]
-        .sort_values(by=['count', sort1_name, sort2_name], ascending=[False, True, True])
-    )
-
-    out.to_csv(path, index=False)
-
-def make_double_sort_csv2(df, path, sort1_id, sort2_id, sort1_name, sort2_name, ref1, ref2, all_pairs):
+def make_double_sort_csv(df, path, sort1_id, sort2_id, sort1_name, sort2_name, ref1, ref2, all_pairs):
     counts = df.groupby([sort1_id, sort2_id]).size()
 
     full_index = pd.MultiIndex.from_tuples(all_pairs, names=[sort1_id, sort2_id])

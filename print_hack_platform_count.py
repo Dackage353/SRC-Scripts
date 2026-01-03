@@ -1,11 +1,11 @@
-from common import data_handler, fetch_handler, file_helper, reference
+from common import fetch_handler, file_helper, reference, src_helper, tool
 
 
 FORCE_FETCH = False
 
 
 if __name__ == '__main__':
-    data = fetch_handler.fetch_all_hack_info(FORCE_FETCH)
+    data = fetch_handler.fetch_all_series_game_info(FORCE_FETCH)
 
     hacks_with_1 = []
     hacks_with_2 = []
