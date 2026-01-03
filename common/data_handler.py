@@ -1,4 +1,4 @@
-from common import reference
+from common import fetch_handler, reference
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from datetime import timedelta
@@ -36,6 +36,17 @@ def parse_date(date):
         return None
 
 
+def get_formatted_time(seconds):
+    td = timedelta(seconds=seconds)
+    total_ms = int(td.total_seconds() * 1000)
+
+    hours, rem = divmod(total_ms, 3_600_000)
+    minutes, rem = divmod(rem,   60_000)
+    seconds, ms  = divmod(rem,       1000)
+
+    return f"{hours:02}:{minutes:02}:{seconds:02}.{ms:03}"
+
+
 def get_data_frame_for_run_list(runs):
     reference.check_for_missing_info_from_runs(runs)
     df = pd.DataFrame([r.__dict__ for r in runs])
@@ -48,11 +59,11 @@ def get_data_frame_for_run_list(runs):
     df = df.sort_values(['game_name', 'category_name', 'single_player_name'], ascending=[True, True, True])
     
     return df
-        
+
         
 class RunInfo:
     def __init__(self, data):
-        global parse_date, parse_date_and_seconds
+        global parse_date, parse_date_and_seconds, get_formatted_time
 
         #ids
         self.run_id = data.get('id')
@@ -61,7 +72,7 @@ class RunInfo:
 
         #time
         self.run_time = data.get('times', {}).get('primary_t')
-        self.run_time_formatted = timedelta(seconds=self.run_time) if self.run_time else None
+        self.run_time_formatted = get_formatted_time(self.run_time) if self.run_time else None
         self.run_date = parse_date(data.get('date'))
         self.time_submitted = parse_date_and_seconds(data.get('submitted'))
 
@@ -216,6 +227,8 @@ class CategoryInfo:
 
         self.game_id = self.game_api_link.rsplit('/', 1)[-1] if self.game_api_link else None
         
+    def get_game_name(self):
+        return fetch_handler.fetch_game_name(self.game_id)
 
     def __repr__(self):
         return f'{self.__class__.__name__}({self.__dict__})'
