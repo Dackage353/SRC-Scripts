@@ -5,7 +5,7 @@ FORCE_FETCH = False
 
 
 if __name__ == '__main__':
-    data = fetch_handler.fetch_all_series_game_info(FORCE_FETCH)
+    data = fetch_handler.fetch_series_info(FORCE_FETCH)
 
     hacks_without_levels = []
 

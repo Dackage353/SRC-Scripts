@@ -43,15 +43,15 @@ def fetch_user_name(user_id):
         return reference.user_names[user_id]
 
 
-def fetch_all_series_game_names(series=constants.DEFAULT_SERIES, force_fetch=False):
-    data = fetch_all_series_game_info(series, force_fetch)
-    hacks = tool.create_game_info_from_data(data)
+def fetch_series_game_names(force_fetch=False, series=constants.DEFAULT_SERIES):
+    data = fetch_series_info(force_fetch, series)
+    games = tool.create_game_info_from_data(data)
 
-    return [hack.name_international for hack in hacks]
+    return [game.name_international for game in games]
 
 
-def fetch_all_series_game_info(series=constants.DEFAULT_SERIES, force_fetch=False):
-    path = Path(f'{constants.HACK_INFO_DIRECTORY}/{constants.ALL_HACK_INFO_FILE_NAME}')
+def fetch_series_info(force_fetch=False, series=constants.DEFAULT_SERIES):
+    path = Path(f'{constants.SERIES_INFO_DIRECTORY}/{series}_series_info')
         
     if not force_fetch and path.exists():
         return file_helper.load_json(path)
@@ -66,11 +66,11 @@ def fetch_all_series_game_info(series=constants.DEFAULT_SERIES, force_fetch=Fals
 
 
 def fetch_game_info(game_ids, force_fetch=False):
-    hacks = fetch_all_series_game_info(force_fetch)
+    series = fetch_series_info(force_fetch)
 
     return [
-        hack for hack in hacks
-        if hack['id'] in game_ids
+        game for game in series
+        if game['id'] in game_ids
     ]
 
 
@@ -142,11 +142,11 @@ def fetch_category_run_list_data(category_id, force_fetch=False):
 
 
 def fetch_all_fullgame_categories(force_fetch=False):
-    data = fetch_all_series_game_info(force_fetch)
+    data = fetch_series_info(force_fetch)
     fullgame_categories = []
 
-    for hack in data:
-        categories_data = hack.get('categories', {}).get('data')
+    for game in data:
+        categories_data = game.get('categories', {}).get('data')
 
         categories = tool.create_category_info_from_data(categories_data)
         fullgame_categories.extend([category for category in categories if category.type == 'per-game'])

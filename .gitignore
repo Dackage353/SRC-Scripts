@@ -3,7 +3,7 @@ leaderboard_dump/
 category_info_dump/
 category_run_list_dump/
 dump/
-hack_info/
+series_info/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
