@@ -1,4 +1,4 @@
-from common import fetch_handler
+from common import fetch_handler, file_helper, reference, src_helper, tool
 
 
 class CategoryInfo:
@@ -25,8 +25,13 @@ class CategoryInfo:
 
         self.game_id = self.game_api_link.rsplit('/', 1)[-1] if self.game_api_link else None
         
-    def get_game_name(self):
-        return fetch_handler.fetch_game_name(self.game_id)
+    @property
+    def game_name(self):
+        return reference.game_names[self.game_id]
+
+    @property
+    def game_and_category_name(self):
+        return f'{reference.game_names[self.game_id]} - {self.name}'
 
     def __repr__(self):
         return f'{self.__class__.__name__}({self.__dict__})'

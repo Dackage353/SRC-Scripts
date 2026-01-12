@@ -1,9 +1,5 @@
 output/
-leaderboard_dump/
-category_info_dump/
-category_run_list_dump/
-dump/
-series_info/
+dumps/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

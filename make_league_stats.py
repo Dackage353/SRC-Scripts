@@ -42,7 +42,7 @@ def make_files_for_runs(runs, file_name):
     
     file_helper.make_text_file(df.groupby('game_name').size().to_string(header=False), f'output/{file_name} - runs per game.txt')
     file_helper.make_text_file(df.groupby('category_name').size().to_string(header=False), f'output/{file_name} - runs per category.txt')
-    file_helper.make_text_file(df.groupby('single_player_name').size().to_string(header=False), f'output/{file_name} - runs per player.txt')
+    file_helper.make_text_file(df.groupby('solo_player_name').size().to_string(header=False), f'output/{file_name} - runs per player.txt')
     file_helper.make_text_file(df.groupby('verifier_name').size().to_string(header=False), f'output/{file_name} - runs per verifier.txt')
 
     

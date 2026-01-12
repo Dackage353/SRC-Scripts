@@ -33,7 +33,7 @@ def get_level_url(level_id):
     return f'https://www.speedrun.com/api/v1/levels/{level_id}'
 
 
-def get_game_variables(game_id):
+def get_game_variables_url(game_id):
     return f'https://www.speedrun.com/api/v1/games/{game_id}/variables'
 
 
@@ -41,20 +41,20 @@ def get_category_run_list_url(category_id):
     return f'https://www.speedrun.com/api/v1/runs?category={category_id}'
 
 
-def get_game_id(game):
+def get_game_id_url(game):
     return f'https://www.speedrun.com/api/v1/games?name={game}'
 
 
-def get_game_categories(game_id):
+def get_game_categories_url(game_id):
     return f'https://www.speedrun.com/api/v1/games/{game_id}/categories'
 
 
 # complex urls
-def get_leaderboard_for_game_category(game_id, category):
+def get_leaderboard_for_game_category_url(game_id, category):
     return f'https://www.speedrun.com/api/v1/leaderboards/{game_id}/category/{category}?embed=players'
 
 
-def get_leaderboard_for_game_level_category(game_id, level_id,category):
+def get_leaderboard_for_game_level_category_url(game_id, level_id,category):
     return f'https://www.speedrun.com/api/v1/leaderboards/{game_id}/level/{level_id}/{category}?embed=players'
 
 
@@ -62,12 +62,16 @@ def get_series_info_url(series, max=200):
     return f'https://www.speedrun.com/api/v1/series/{series}/games?max={max}&embed=categories,variables,levels'
 
 
-def get_games_and_categories(max=200):
+def get_games_and_categories_url(max=200):
     return 'https://www.speedrun.com/api/v1/games?embed=categories&max={max}'
 
 
-def get_wr_for_game_category(game_id, category):
+def get_wr_for_game_category_url(game_id, category):
     return f'https://www.speedrun.com/api/v1/leaderboards/{game_id}/category/{category}?top=1&embed=players'
+
+
+def get_runs_by_user_url(user_id):
+    return f'https://www.speedrun.com/api/v1/runs?user={user_id}'
 
 
 # action urls

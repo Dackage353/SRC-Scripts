@@ -1,4 +1,4 @@
-from common import tool
+from common import fetch_handler, file_helper, reference, src_helper, tool
 
 
 class RunInfo:
@@ -23,22 +23,22 @@ class RunInfo:
         #players
         players = data.get('players', [])
         player_ids = [player.get('id') for player in players if player.get('rel') == 'user']
-        self.single_player_id = None
-        self.multiple_player_ids = None
+        self.solo_player_id = None
+        self.co_op_player_ids = None
 
         if len(player_ids) == 1:
-            self.single_player_id = player_ids[0]
+            self.solo_player_id = player_ids[0]
         elif len(player_ids) > 1:
-            self.multiple_player_ids = player_ids
+            self.co_op_player_ids = player_ids
 
     def get_player_ids(self):
         player_ids = []
 
-        if self.single_player_id:
-            player_ids.append(self.single_player_id)
+        if self.solo_player_id:
+            player_ids.append(self.solo_player_id)
 
-        if self.multiple_player_ids:
-            player_ids.extend(self.multiple_player_ids)
+        if self.co_op_player_ids:
+            player_ids.extend(self.co_op_player_ids)
 
         return player_ids
 

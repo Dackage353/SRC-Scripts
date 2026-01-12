@@ -117,13 +117,54 @@ def fetch_leaderboard(category_id, force_fetch=False):
             return None
 
 
-def fetch_category_run_lists(category_ids, force_fetch=False):
-    for category_id in category_ids:
-        data = fetch_category_run_list_data(category_id, force_fetch)
-        runs = tool.create_run_info_from_data(data)
+def fetch_run_list_for_user(user_id, force_fetch=False):
+    data = fetch_run_list_data_for_user(user_id, force_fetch)
+    return tool.create_run_info_from_data(data)
 
+
+def fetch_run_list_data_for_user(user_id, force_fetch=False):
+    path = Path(f'{constants.RUN_LIST_FOR_USER_DIRECTORY}/{user_id}.json')
+    
+    if not force_fetch and path.exists():
+        return file_helper.load_json(path)
+    else:
+        data = src_helper.request_src_list(src_helper.get_runs_by_user_url(user_id))
+        file_helper.dump_json(data, path)
+        
+        print(f'fetched run data for {user_id} - {reference.user_names[user_id]}')
+        print(f'{len(data)} runs')
+        return data
+
+
+def fetch_all_fullgame_category_run_lists(force_fetch=False):
+    run_lists = []
+
+    for category_id in reference.category_names:
+        run_list = fetch_category_run_list(category_id, force_fetch)
+        run_lists.append(run_list)
+
+    return run_lists
+
+
+def fetch_category_run_lists(category_ids, force_fetch=False):
+    run_lists = []
+
+    for category_id in category_ids:
+        run_list = fetch_category_run_list(category_id, force_fetch)
+        run_lists.append(run_list)
+
+    return run_lists
+
+
+def fetch_category_run_list(category_id, force_fetch=False, make_csv=False):
+    data = fetch_category_run_list_data(category_id, force_fetch)
+    runs = tool.create_run_info_from_data(data)
+
+    if make_csv:
         df = tool.get_data_frame_for_run_list(runs)
         file_helper.make_csv_file_from_data_frame(df, f'output/run-list_{category_id}.csv')
+
+    return runs
 
 
 def fetch_category_run_list_data(category_id, force_fetch=False):
