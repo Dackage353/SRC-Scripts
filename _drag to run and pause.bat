@@ -1,6 +1,6 @@
 @echo off
 
-py "%~1"
+python "%~1"
 
 echo.
 pause

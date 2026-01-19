@@ -6,7 +6,7 @@ _HEADERS = {
     'Accept': 'application/json',
 }
 _h = dict(_HEADERS)
-_sleep_period = .75
+_sleep_period = 0.5
 _retry_sleep = 30
 
 NON_SRC_USERS = ['Maha Maha', 'Cryogeon', 'Madghostek', 'WWMResident','atmpas','CeeSZee','255']
@@ -37,10 +37,6 @@ def get_game_variables_url(game_id):
     return f'https://www.speedrun.com/api/v1/games/{game_id}/variables'
 
 
-def get_category_run_list_url(category_id):
-    return f'https://www.speedrun.com/api/v1/runs?category={category_id}'
-
-
 def get_game_id_url(game):
     return f'https://www.speedrun.com/api/v1/games?name={game}'
 
@@ -49,7 +45,24 @@ def get_game_categories_url(game_id):
     return f'https://www.speedrun.com/api/v1/games/{game_id}/categories'
 
 
-# complex urls
+# runs list urls
+def get_game_run_list_url(game_id):
+    return f'https://www.speedrun.com/api/v1/runs?game={game_id}'
+
+
+def get_category_run_list_url(category_id):
+    return f'https://www.speedrun.com/api/v1/runs?category={category_id}'
+
+
+def get_user_run_list_url(user_id):
+    return f'https://www.speedrun.com/api/v1/runs?user={user_id}'
+
+
+# other urls
+def get_series_game_info_list_url(series_id):
+    return f'https://www.speedrun.com/api/v1/series/{series_id}/games'
+
+
 def get_leaderboard_for_game_category_url(game_id, category):
     return f'https://www.speedrun.com/api/v1/leaderboards/{game_id}/category/{category}?embed=players'
 
@@ -58,20 +71,16 @@ def get_leaderboard_for_game_level_category_url(game_id, level_id,category):
     return f'https://www.speedrun.com/api/v1/leaderboards/{game_id}/level/{level_id}/{category}?embed=players'
 
 
-def get_series_info_url(series, max=200):
-    return f'https://www.speedrun.com/api/v1/series/{series}/games?max={max}&embed=categories,variables,levels'
+def get_series_info_url(series_id, max=200):
+    return f'https://www.speedrun.com/api/v1/series/{series_id}/games?max={max}&embed=categories,variables,levels'
 
 
 def get_games_and_categories_url(max=200):
-    return 'https://www.speedrun.com/api/v1/games?embed=categories&max={max}'
+    return f'https://www.speedrun.com/api/v1/games?embed=categories&max={max}'
 
 
 def get_wr_for_game_category_url(game_id, category):
     return f'https://www.speedrun.com/api/v1/leaderboards/{game_id}/category/{category}?top=1&embed=players'
-
-
-def get_runs_by_user_url(user_id):
-    return f'https://www.speedrun.com/api/v1/runs?user={user_id}'
 
 
 # action urls
@@ -81,8 +90,6 @@ def post_run():
 
 def delete_run(run_id):
     return f'https://www.speedrun.com/api/v1/runs/{run_id}'
-
-
 
 def unverify_run(run_id):
     return f'https://www.speedrun.com/api/v1/runs/{run_id}/status'
@@ -135,7 +142,7 @@ def request_src(url):
         return None
 
 
-def request_src_list(base_url):
+def request_src_list(base_url, offset=0):
     items = []
     max_per_request = 200
 
@@ -143,9 +150,15 @@ def request_src_list(base_url):
     if '?' not in base_url:
         url += '?'
     url += f"&max={max_per_request}"
+    url += f"&offset={offset}"
 
+    request_count = 0
     while url is not None:
         response = requests.get(url, headers=_h)
+        request_count += 1
+        if request_count % 5 == 0:
+            print(f'{request_count} requests so far. list is length {len(items)}')
+
         if response.status_code != 200:
             print(f"Request failed with status code {response.status_code}")
             break
