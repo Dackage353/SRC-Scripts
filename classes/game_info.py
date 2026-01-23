@@ -1,5 +1,6 @@
 from common import fetch_handler, file_helper, reference, src_helper, tool
 from datetime import datetime, timezone
+from classes import CategoryInfo
 
 class GameInfo:
     def __init__(self, data):
@@ -75,6 +76,9 @@ class GameInfo:
         self.assets_trophy_2nd_link      = assets.get('trophy-2nd', {}).get('uri')
         self.assets_trophy_3rd_link      = assets.get('trophy-3rd', {}).get('uri')
         self.assets_trophy_4th_link      = assets.get('trophy-4th', {}).get('uri')
+
+        category_data = data.get('categories', {}).get('data')
+        self.categories = [CategoryInfo(data) for data in category_data] if category_data else None
 
     def __repr__(self):
         fields = "\n  ".join(f"{k}={v!r}" for k, v in sorted(self.__dict__.items()))

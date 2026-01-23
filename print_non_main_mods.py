@@ -1,4 +1,4 @@
-from common import fetch_handler, file_helper, reference, src_helper, tool
+from common import fetch_handler, file_helper, reference, src_helper, tool, constants
 
 
 FORCE_FETCH = False
@@ -16,14 +16,14 @@ MAIN_MODS = {
 
 
 if __name__ == '__main__':
-    games = fetch_handler.fetch_all_hack_info(FORCE_FETCH)
+    games = fetch_handler.get_series_info(constants.MAIN_SERIES, FORCE_FETCH)
 
     for game in games:
         potential_incorrect_mods = []
 
         for mod in game['moderators']:
             if mod not in MAIN_MODS:
-                name = fetch_handler.fetch_user_name(mod)
+                name = fetch_handler.get_user_name(mod)
                 potential_incorrect_mods.append(name)
 
         if potential_incorrect_mods:

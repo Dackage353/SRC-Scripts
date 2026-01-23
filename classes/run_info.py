@@ -6,6 +6,7 @@ class RunInfo:
         #ids
         self.run_id = data.get('id')
         self.game_id = data.get('game')
+        self.level_id = data.get('level')
         self.category_id = data.get('category')
 
         #time

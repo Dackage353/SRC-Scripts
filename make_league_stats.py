@@ -3,6 +3,8 @@ from classes import CategoryInfo, GameInfo, RunInfo
 from datetime import datetime, timezone
 
 
+FORCE_FETCH = False
+
 runs = []
 valid_runs = []
 invalid_runs = []
@@ -24,14 +26,14 @@ end_time = datetime(2025, 12, 1, 11, 0, tzinfo=timezone.utc)
     
 
 def process_category_run_list(category_id):    
-    data = fetch_handler.fetch_category_run_list_data(category_id)
+    category_runs = fetch_handler.get_category_run_list(category_id, FORCE_FETCH)
 
-    for run_data in data:
-        run = RunInfo(run_data)
-        
+    for run in category_runs:
         runs.append(run)
+        
         if start_time <= run.time_submitted <= end_time and run.verify_status == 'verified':
             valid_runs.append(run)
+
         else:
             invalid_runs.append(run)
 

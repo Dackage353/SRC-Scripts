@@ -1,7 +1,22 @@
+from common import constants
 from pathlib import Path
 import json
 
 import pandas as pd
+
+
+REFERENCE_DIRECTORY = 'reference'
+LEADERBOARD_DIRECTORY = 'dumps/leaderboard'
+
+SERIES_INFO_DIRECTORY = 'dumps/series_info'
+CATEGORY_DIRECTORY = 'dumps/category_info'
+GAME_DIRECTORY = 'dumps/game_info'
+
+SERIES_RUN_LIST_DIRECTORY = 'dumps/series_run_list'
+GAME_RUN_LIST_DIRECTORY = 'dumps/game_run_list'
+CATEGORY_RUN_LIST_DIRECTORY = 'dumps/category_run_list'
+USER_RUN_LIST_DIRECTORY = 'dumps/user_run_list'
+
 
 def load_json(path):
     path = Path(str(path))
@@ -73,3 +88,41 @@ def make_double_sort_csv(df, path, sort1_id, sort2_id, sort1_name, sort2_name, r
     )
 
     out.to_csv(path, index=False)
+
+
+# region get file paths
+def get_series_run_list_path(game_id):
+    return Path(f'{SERIES_RUN_LIST_DIRECTORY}/{game_id}_series_run_list.json')
+
+
+def get_game_run_list_path(game_id):
+    return Path(f'{GAME_RUN_LIST_DIRECTORY}/{game_id}_game_run_list.json')
+
+
+def get_category_run_list_path(category_id):
+    return Path(f'{CATEGORY_RUN_LIST_DIRECTORY}/{category_id}_category_run_list.json')
+
+
+def get_user_run_list_path(user_id):
+    return Path(f'{USER_RUN_LIST_DIRECTORY}/{user_id}_user_run_list.json')
+
+
+def get_series_game_info_list_path(series_id):
+    return Path(f'{SERIES_INFO_DIRECTORY}/{series_id}_series_game_info_list.json')
+
+
+def get_leaderboard_path(category_id):
+    return Path(f'{LEADERBOARD_DIRECTORY}/{category_id}_leaderboard.json')
+
+
+def get_series_info_path(series_id):
+    return Path(f'{SERIES_INFO_DIRECTORY}/{series_id}_series_info')
+
+
+def get_category_info_path(category_id):
+    return Path(f'{CATEGORY_DIRECTORY}/{category_id}_category_info.json')
+
+
+def get_game_info_path(game_id):
+    return Path(f'{GAME_DIRECTORY}/{game_id}_game_info.json')
+# endregion

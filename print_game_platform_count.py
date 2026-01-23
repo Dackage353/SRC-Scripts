@@ -1,11 +1,11 @@
-from common import fetch_handler, file_helper, reference, src_helper, tool
+from common import fetch_handler, file_helper, reference, src_helper, tool, constants
 
 
 FORCE_FETCH = False
 
 
 if __name__ == '__main__':
-    data = fetch_handler.fetch_series_info(FORCE_FETCH)
+    data = fetch_handler.get_series_info(constants.MAIN_SERIES, FORCE_FETCH)
 
     hacks_with_1 = []
     hacks_with_2 = []
