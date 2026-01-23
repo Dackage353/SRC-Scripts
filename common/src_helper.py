@@ -84,7 +84,10 @@ def delete_run(run_id):
 
 def unverify_run(run_id):
     return f'https://www.speedrun.com/api/v1/runs/{run_id}/status'
+# endregion
 
+
+# region requests
 def request_src(url):
     err_lim = 5
     err_cnt = 1
