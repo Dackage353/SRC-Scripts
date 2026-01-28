@@ -19,6 +19,7 @@ def make_csv_for_fullgame_fill_counts(fullgame_set_per_user):
 
     file_helper.make_csv_file_from_data_frame(df, 'output/player_fill_counts.csv')
 
+
 if __name__ == '__main__':
     fullgame_categories = fetch_handler.get_all_fullgame_categories(constants.MAIN_SERIES, FORCE_FETCH)
     fullgame_set_per_user = {user_id: set() for user_id in reference.user_names}

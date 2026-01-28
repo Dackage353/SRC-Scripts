@@ -12,7 +12,7 @@ def get_series_game_names(series_id: str, force_fetch: bool = False):
 def get_game_name(game_id: str, force_fetch: bool = False):
     if game_id:
         if force_fetch or game_id not in reference.game_names:
-            print(f'starting to fetch game name for {game_id}')
+            print(f'\nstarting to fetch game name for {game_id}')
             link = src_helper.get_game_url(game_id)
             request = src_helper.request_src_no_error(link)
 
@@ -32,7 +32,7 @@ def get_game_name(game_id: str, force_fetch: bool = False):
 def get_category_name(category_id: str, force_fetch: bool = False):
     if category_id:
         if force_fetch or category_id not in reference.category_names:
-            print(f'starting to fetch category name for {category_id}')
+            print(f'\nstarting to fetch category name for {category_id}')
             link = src_helper.get_category_url(category_id)
             request = src_helper.request_src_no_error(link)
 
@@ -52,7 +52,7 @@ def get_category_name(category_id: str, force_fetch: bool = False):
 def get_user_name(user_id: str, force_fetch: bool = False):
     if user_id:
         if force_fetch or user_id not in reference.user_names:
-            print(f'starting to fetch user name for {user_id}')
+            print(f'\nstarting to fetch user name for {user_id}')
             link = src_helper.get_user_url(user_id)
             request = src_helper.request_src_no_error(link)
 
@@ -73,19 +73,13 @@ def get_user_name(user_id: str, force_fetch: bool = False):
 # region get run lists
 def get_series_run_list(series_id: str, force_fetch: bool = False):
     path = file_helper.get_series_run_list_path(series_id)
-    data = []
+    runs = []
 
-    if not force_fetch and path.exists():
-        data = file_helper.load_json(path)
+    games = get_series_game_info_list(series_id, force_fetch)
+    for game in games:
+        runs.extend(get_game_run_list(game.id, force_fetch))
 
-    else:
-        games = get_series_game_info_list(series_id, force_fetch)
-        for game in games:
-            data.extend(get_game_run_list(game.id, force_fetch))
-
-        file_helper.dump_json(data, path)
-
-    return tool.create_run_info_from_data(data)
+    return runs
 
 
 def get_game_run_list(game_id: str, force_fetch: bool = False):
@@ -97,7 +91,7 @@ def get_game_run_list(game_id: str, force_fetch: bool = False):
     else:
         game_name = get_game_name(game_id)
 
-        print(f'starting to fetch game {game_id}:{game_name} run list')
+        print(f'\nstarting to fetch game {game_id}:{game_name} run list')
         link = src_helper.get_game_run_list_url(game_id)
         data = src_helper.request_src_list(link)
         print(f'fetched game {game_id}:{game_name} run list of size {len(data)}')
@@ -116,7 +110,7 @@ def get_category_run_list(category_id: str, force_fetch: bool = False):
     else:
         category_name = get_category_name(category_id)
 
-        print(f'starting to fetch category {category_id}:{category_name} run list')
+        print(f'\nstarting to fetch category {category_id}:{category_name} run list')
         link = src_helper.get_category_run_list_url(category_id)
         data = src_helper.request_src_list(link)
         print(f'fetched category {category_id}:{category_name} run list of size {len(data)}')
@@ -135,7 +129,7 @@ def get_user_run_list(user_id: str, force_fetch: bool = False):
     else:
         user_name = get_user_name(user_id)
 
-        print(f'starting to fetch user {user_id}:{user_name} run list')
+        print(f'\nstarting to fetch user {user_id}:{user_name} run list')
         link = src_helper.get_user_run_list_url(user_id)
         data = src_helper.request_src_list(link)
         print(f'fetched user {user_id}:{user_name} run list of size {len(data)}')
@@ -153,7 +147,7 @@ def get_series_game_info_list(series_id: str, force_fetch: bool = False):
         data = file_helper.load_json(path)
 
     else:
-        print(f'starting to fetch series {series_id} game info list')
+        print(f'\nstarting to fetch series {series_id} game info list')
         link = src_helper.get_series_game_info_list_url(series_id)
         data = src_helper.request_src_list(link)
         print(f'fetched series {series_id} game info list of size {len(data)}')
@@ -170,7 +164,7 @@ def get_series_info(series_id: str, force_fetch: bool = False):
         return file_helper.load_json(path)
     
     else:
-        print(f'starting to fetch series data for {series_id}')
+        print(f'\nstarting to fetch series data for {series_id}')
         link = src_helper.get_series_info_url(series_id)
         data = src_helper.request_src_list(link)
         print(f'fetched series data for {series_id}')
@@ -187,7 +181,7 @@ def get_category_info(category_id: str, force_fetch: bool = False):
         return file_helper.load_json(path)
     
     else:
-        print(f'starting to fetch category data for {category_id}')
+        print(f'\nstarting to fetch category data for {category_id}')
         link = src_helper.get_category_url(category_id)
         data = src_helper.request_src(link).get('data')
         name = get_category_name(category_id)
@@ -204,7 +198,7 @@ def get_game_info(game_id: str, force_fetch: bool = False):
         return file_helper.load_json(path)
     
     else:
-        print(f'starting to fetch game data for {game_id}')
+        print(f'\nstarting to fetch game data for {game_id}')
         link = src_helper.get_game_url(game_id)
         data = src_helper.request_src(link).get('data')
         name = get_game_name(game_id)
@@ -231,7 +225,7 @@ def get_leaderboard(category_id: str, force_fetch: bool = False):
                 break
 
         if leaderboard_link:
-            print(f'starting to fetch category {category_id} leaderboard')
+            print(f'\nstarting to fetch category {category_id} leaderboard')
             data = src_helper.request_src(leaderboard_link).get('data')
             print(f'fetched category {category_id} leaderboard')
 
