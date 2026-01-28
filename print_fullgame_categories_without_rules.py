@@ -5,11 +5,12 @@ FORCE_FETCH = False
 
 
 if __name__ == '__main__':
-    categories = fetch_handler.get_all_fullgame_categories(constants.MAIN_SERIES, FORCE_FETCH)
+    fullgame_categories = fetch_handler.get_all_fullgame_categories(constants.MAIN_SERIES, FORCE_FETCH)
+    fullgame_categories.extend(fetch_handler.get_all_fullgame_categories(constants.SECONDARY_SERIES, FORCE_FETCH))
 
     current_game_id = ''
     count = 0
-    for category in categories:
+    for category in fullgame_categories:
         if category.rules is None:
             count += 1
 
@@ -24,4 +25,4 @@ if __name__ == '__main__':
 
             print(category.name)
 
-    print(f'\n{count} out of {len(categories)} fullgame categories don\'t have rules')
+    print(f'\n{count} out of {len(fullgame_categories)} fullgame categories don\'t have rules')

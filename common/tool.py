@@ -1,8 +1,24 @@
-from common import file_helper, reference
 from classes import CategoryInfo, GameInfo, RunInfo
+from collections import defaultdict
+from common import file_helper, reference, fetch_handler
 from datetime import datetime, timezone
 from datetime import timedelta
 import pandas as pd
+
+
+def sort_runs_by_category_id(runs):
+    category_dict = defaultdict(list)
+
+    for run in runs:
+        category_dict[run.category_id].append(run)
+
+    return dict(category_dict)
+
+
+def check_for_missing_names_in_run_list(runs):
+    for run in runs:
+        for player_id in run.get_player_ids():
+            fetch_handler.get_user_name(player_id)
 
 
 def create_game_info_from_data(data):

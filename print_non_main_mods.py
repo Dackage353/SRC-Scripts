@@ -16,15 +16,16 @@ MAIN_MODS = {
 
 
 if __name__ == '__main__':
-    games = fetch_handler.get_series_info(constants.MAIN_SERIES, FORCE_FETCH)
+    data = fetch_handler.get_series_info(constants.MAIN_SERIES, FORCE_FETCH)
+    data.extend(fetch_handler.get_series_info(constants.SECONDARY_SERIES, FORCE_FETCH))
 
-    for game in games:
+    for game_data in data:
         potential_incorrect_mods = []
 
-        for mod in game['moderators']:
+        for mod in game_data['moderators']:
             if mod not in MAIN_MODS:
                 name = fetch_handler.get_user_name(mod)
                 potential_incorrect_mods.append(name)
 
         if potential_incorrect_mods:
-                print(f"{game['abbreviation']} has non-main mods of {potential_incorrect_mods}")
+                print(f"{game_data['abbreviation']} has non-main mods of {potential_incorrect_mods}")

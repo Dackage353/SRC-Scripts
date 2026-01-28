@@ -6,7 +6,8 @@ FORCE_FETCH = False
         
     
 if __name__ == '__main__':
-    runs = fetch_handler.get_series_run_list(series_id=constants.MAIN_SERIES, force_fetch=FORCE_FETCH)
+    runs = fetch_handler.get_series_run_list(constants.MAIN_SERIES, FORCE_FETCH)
+    runs.extend(fetch_handler.get_series_run_list(constants.SECONDARY_SERIES, FORCE_FETCH))
 
     df = tool.get_data_frame_for_run_list(runs)
 

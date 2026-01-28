@@ -6,37 +6,38 @@ FORCE_FETCH = False
 
 if __name__ == '__main__':
     data = fetch_handler.get_series_info(constants.MAIN_SERIES, FORCE_FETCH)
+    data.extend(fetch_handler.get_series_info(constants.SECONDARY_SERIES, FORCE_FETCH))
 
-    hacks_with_1 = []
-    hacks_with_2 = []
-    hacks_with_3 = []
-    other_hacks = []
+    games_with_1 = []
+    games_with_2 = []
+    games_with_3 = []
+    other_games = []
 
-    for hack_data in data:
-        platforms = hack_data.get('platforms')
+    for game_data in data:
+        platforms = game_data.get('platforms')
 
-        name = hack_data.get('names', {}).get('international')
+        name = game_data.get('names', {}).get('international')
         if len(platforms) == 1:
-            hacks_with_1.append(name)
+            games_with_1.append(name)
         elif len(platforms) == 2:
-            hacks_with_2.append(name)
+            games_with_2.append(name)
         elif len(platforms) == 3:
-            hacks_with_3.append(name)
+            games_with_3.append(name)
 
-    print('hacks with 1 platform\n-----')
-    print('\n'.join(hacks_with_1))
+    print('games with 1 platform\n-----')
+    print('\n'.join(games_with_1))
 
-    print('\nhacks with 2 platforms\n-----')
-    print('\n'.join(hacks_with_2))
+    print('\ngames with 2 platforms\n-----')
+    print('\n'.join(games_with_2))
 
-    print('\nhacks with 3 platforms\n-----')
-    print('\n'.join(hacks_with_3))
+    print('\ngames with 3 platforms\n-----')
+    print('\n'.join(games_with_3))
 
-    #print('\nhacks without 1-3 platforms\n-----')
-    #print('\n'.join(other_hacks))
+    #print('\games without 1-3 platforms\n-----')
+    #print('\n'.join(other_games))
 
-    print(f'\n{len(hacks_with_1)} have 1 platform')
-    print(f'{len(hacks_with_2)} have 2 platforms')
-    print(f'{len(hacks_with_3)} have 3 platforms')
-    #print(f'{len(other_hacks)} without 1-3 platforms')
+    print(f'\n{len(games_with_1)} have 1 platform')
+    print(f'{len(games_with_2)} have 2 platforms')
+    print(f'{len(games_with_3)} have 3 platforms')
+    #print(f'{len(other_games)} without 1-3 platforms')
     

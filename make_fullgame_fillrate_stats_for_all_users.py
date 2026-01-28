@@ -21,14 +21,26 @@ def make_csv_for_fullgame_fill_counts(fullgame_set_per_user):
 
 
 if __name__ == '__main__':
+    runs = fetch_handler.get_series_run_list(constants.MAIN_SERIES, FORCE_FETCH)
+    runs.extend(fetch_handler.get_series_run_list(constants.SECONDARY_SERIES, FORCE_FETCH))
+
+    tool.check_for_missing_names_in_run_list(runs)
+    runs_by_category = tool.sort_runs_by_category_id(runs)
+
     fullgame_categories = fetch_handler.get_all_fullgame_categories(constants.MAIN_SERIES, FORCE_FETCH)
+    fullgame_categories.extend(fetch_handler.get_all_fullgame_categories(constants.SECONDARY_SERIES, FORCE_FETCH))
+
+
     fullgame_set_per_user = {user_id: set() for user_id in reference.user_names}
 
     for fullgame_category in fullgame_categories:
-        run_list = fetch_handler.get_category_run_list(fullgame_category.id, FORCE_FETCH)
+        category_runs = runs_by_category.get(fullgame_category.id, [])
 
-        for run in run_list:
+        for run in category_runs:
             for player_id in run.get_player_ids():
                 fullgame_set_per_user[player_id].add(fullgame_category.id)
+
+        print(f'finished category {fullgame_category.id}:{fullgame_category.game_and_category_name}')
+
 
     make_csv_for_fullgame_fill_counts(fullgame_set_per_user)

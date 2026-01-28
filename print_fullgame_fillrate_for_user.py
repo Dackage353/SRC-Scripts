@@ -7,6 +7,7 @@ USER_ID = 'qxkrpqm8'
 
 if __name__ == '__main__':
     fullgame_categories = fetch_handler.get_all_fullgame_categories(constants.MAIN_SERIES, FORCE_FETCH)
+    fullgame_categories.extend(fetch_handler.get_all_fullgame_categories(constants.SECONDARY_SERIES, FORCE_FETCH))
     fullgame_categories_dict = {c.id: c for c in fullgame_categories}
 
     run_list = fetch_handler.get_user_run_list(USER_ID, FORCE_FETCH)

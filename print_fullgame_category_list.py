@@ -5,10 +5,12 @@ FORCE_FETCH = False
 
 
 if __name__ == '__main__':
-    categories = fetch_handler.get_all_fullgame_categories(constants.MAIN_SERIES, FORCE_FETCH)
+    fullgame_categories = fetch_handler.get_all_fullgame_categories(constants.MAIN_SERIES, FORCE_FETCH)
+    fullgame_categories.extend(fetch_handler.get_all_fullgame_categories(constants.SECONDARY_SERIES, FORCE_FETCH))
+    
 
     current_game_id = ''
-    for category in categories:
+    for category in fullgame_categories:
         if current_game_id != category.game_id:
             current_game_id = category.game_id
             
@@ -20,4 +22,4 @@ if __name__ == '__main__':
 
         print(category.name)
 
-    print(f'\nprinted {len(categories)} categories')
+    print(f'\nprinted {len(fullgame_categories)} categories')

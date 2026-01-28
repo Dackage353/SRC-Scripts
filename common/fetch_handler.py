@@ -60,11 +60,11 @@ def get_user_name(user_id: str, force_fetch: bool = False):
                 data = request.get('data')
                 name = data.get('names', {}).get('international')
                 reference.user_names[user_id] = name
-                print(f'fetched name for {user_id}:{name}\n')
+                print(f'fetched name for {user_id}:{name}')
 
             else:
                 reference.user_names[user_id] = ""
-                print(f'fetched user id {user_id} was missing\n')
+                print(f'fetched user id {user_id} was missing')
         
         return reference.user_names[user_id]
 # endregion
