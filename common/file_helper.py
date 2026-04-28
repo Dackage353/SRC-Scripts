@@ -21,8 +21,11 @@ USER_RUN_LIST_DIRECTORY = 'dumps/user_run_list'
 def load_json(path):
     path = Path(str(path))
 
-    with path.open('r') as file:
-        return json.load(file)
+    if path.exists():
+        with path.open('r') as file:
+            return json.load(file)
+    else:
+        return {}
 
 
 def dump_json(data, path):
