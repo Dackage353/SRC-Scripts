@@ -1,7 +1,7 @@
 from common import fetch_handler, file_helper, reference, src_helper, tool, constants
 
 
-FORCE_FETCH = True
+FORCE_FETCH = False
 
 
 if __name__ == '__main__':

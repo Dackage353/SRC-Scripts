@@ -1,4 +1,4 @@
-from classes import CategoryInfo, GameInfo, RunInfo
+from classes import Game, Category, Run
 from collections import defaultdict
 from common import file_helper, reference, fetch_handler
 from datetime import datetime, timezone
@@ -21,16 +21,16 @@ def check_for_missing_names_in_run_list(runs):
             fetch_handler.get_user_name(player_id)
 
 
-def create_game_info_from_data(data):
-    return [GameInfo(d) for d in data]
+def create_game_list_from_data(data):
+    return [Game(d) for d in data]
 
 
-def create_category_info_from_data(data):
-    return [CategoryInfo(d) for d in data]
+def create_category_list_from_data(data):
+    return [Category(d) for d in data]
 
 
 def create_run_info_from_data(data):
-    return [RunInfo(d) for d in data]
+    return [Run(d) for d in data]
 
 
 def parse_date_and_seconds(date_and_seconds):
@@ -76,17 +76,3 @@ def get_data_frame_for_run_list(runs):
     df = df.sort_values(['game_name', 'category_name', 'solo_player_name'], ascending=[True, True, True])
     
     return df
-
-
-def x(runs, file_name):
-    df = get_data_frame_for_run_list(runs)
-
-    file_name = 'all_runs'
-    file_helper.make_csv_file_from_data_frame(df, f'output/{file_name}.csv')
-
-    file_helper.make_single_sort_csv(df, f'output/{file_name} - runs per game.txt', 'game_id', 'game_name', reference.game_names, True)
-    file_helper.make_single_sort_csv(df, f'output/{file_name} - runs per player.txt', 'solo_player_id', 'singlsolo_player_namee_player_name', reference.user_names, True)
-    file_helper.make_single_sort_csv(df, f'output/{file_name} - runs per verifier.txt', 'verifier_id', 'verifier_name', reference.user_names, False)
-    
-    all_pairs = [(category.game_id, category.id) for category in categories]
-    file_helper.make_double_sort_csv(df, f'output/{file_name} - runs per category.csv', 'game_id', 'category_id', 'game_name', 'category_name', reference.game_names, reference.category_names, all_pairs)
