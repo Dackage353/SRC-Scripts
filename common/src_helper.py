@@ -49,9 +49,12 @@ def get_user_run_list_url(user_id):
 
 
 # other urls
-def get_series_game_info_list_url(series_id):
-    return f'https://www.speedrun.com/api/v1/series/{series_id}/games'
+def get_game_extended_info_url(game_id):
+    return f'https://www.speedrun.com/api/v1/games?embed=categories,variables,levels'
 
+
+def get_series_extended_info_url(series_id):
+    return f'https://www.speedrun.com/api/v1/series/{series_id}/games?embed=categories,variables,levels'
 
 def get_leaderboard_for_game_category_url(game_id, category):
     return f'https://www.speedrun.com/api/v1/leaderboards/{game_id}/category/{category}?embed=players'
@@ -59,10 +62,6 @@ def get_leaderboard_for_game_category_url(game_id, category):
 
 def get_leaderboard_for_game_level_category_url(game_id, level_id,category):
     return f'https://www.speedrun.com/api/v1/leaderboards/{game_id}/level/{level_id}/{category}?embed=players'
-
-
-def get_series_info_url(series_id):
-    return f'https://www.speedrun.com/api/v1/series/{series_id}/games?embed=categories,variables,levels'
 
 
 def get_games_and_categories_url(max=200):
