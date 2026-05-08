@@ -1,8 +1,10 @@
-from common import fetch_handler, file_helper, reference, src_helper, tool
+from common import fetch_handler, file_helper, reference, src_helper, tool, constants
 
 
-class CategoryInfo:
+class Category:
     def __init__(self, data):
+        self.data = data
+
         self.id                  = data.get('id')
         self.is_miscellaneous    = data.get('miscellaneous')
         self.name                = data.get('name')
@@ -24,6 +26,25 @@ class CategoryInfo:
         self.variables_api_link      = links_by_relation.get('variables')
 
         self.game_id = self.game_api_link.rsplit('/', 1)[-1] if self.game_api_link else None
+
+        self.init_type()
+
+    def init_type(self):
+        self.type = self.data.get('type')
+
+        if self.type == 'per-game':
+            self.type = 'fullgame'
+        elif self.type == 'per-level':
+            name = self.name.lower()
+
+            if name in constants.SINGLE_STAR_CATEGORIES:
+                self.type = 'single star'
+            elif name in constants.STAGE_RTA_CATEGORIES:
+                self.type = 'stage rta'
+            else:
+                print(f'{self.id} - non traditional per-level category name: {self.name}')
+        else:
+            print(f'unknown category type {self.type}')
         
     @property
     def game_name(self):
