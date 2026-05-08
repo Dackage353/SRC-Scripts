@@ -1,9 +1,12 @@
 from common import fetch_handler, file_helper, reference, src_helper, tool
 from datetime import datetime, timezone
-from classes import CategoryInfo
+from .category import Category
+from .level import Level
 
-class GameInfo:
+class Game:
     def __init__(self, data):
+        self.data = data
+
         names = data.get('names', {})
         self.name_international    = names.get('international')
         self.name_japanese         = names.get('japanese')
@@ -77,8 +80,22 @@ class GameInfo:
         self.assets_trophy_3rd_link      = assets.get('trophy-3rd', {}).get('uri')
         self.assets_trophy_4th_link      = assets.get('trophy-4th', {}).get('uri')
 
-        category_data = data.get('categories', {}).get('data')
-        self.categories = [CategoryInfo(data) for data in category_data] if category_data else None
+        categories_data = data.get('categories', {}).get('data')
+        levels_data = data.get('levels', {}).get('data')
+        variables_data = data.get('variables', {}).get('data')
+        
+        level_variables = {}
+        for variable_data in variables_data:
+            level_id = variable_data.get('scope').get('level')
+
+            if level_id:
+                if level_id not in level_variables:
+                    level_variables[level_id] = variable_data
+                else:
+                    print(f'{variable_data.get('id')} - duplicate level variable {level_id}')
+
+        self.categories = [Category(category_data) for category_data in categories_data] if categories_data else None
+        self.levels = [Level(level_data, self.id, level_variables) for level_data in levels_data] if levels_data else None
 
     def __repr__(self):
         fields = "\n  ".join(f"{k}={v!r}" for k, v in sorted(self.__dict__.items()))
