@@ -4,7 +4,7 @@ from common import file_helper, reference, src_helper, tool, constants
 # region get names
 def get_series_game_names(series_id: str, force_fetch: bool = False):
     data = get_series_info(series_id, force_fetch)
-    games = tool.create_game_info_from_data(data)
+    games = tool.create_game_list_from_data(data)
 
     return [game.name_international for game in games]
 
@@ -75,7 +75,7 @@ def get_series_run_list(series_id: str, force_fetch: bool = False):
     path = file_helper.get_series_run_list_path(series_id)
     runs = []
 
-    games = get_series_game_info_list(series_id, force_fetch)
+    games = get_series_game_list(series_id, force_fetch)
     for game in games:
         runs.extend(get_game_run_list(game.id, force_fetch))
 
@@ -141,20 +141,10 @@ def get_user_run_list(user_id: str, force_fetch: bool = False):
 
 
 # region get basic info
-def get_series_game_info_list(series_id: str, force_fetch: bool = False):
-    path = file_helper.get_series_game_info_list_path(series_id)
-    if not force_fetch and path.exists():
-        data = file_helper.load_json(path)
+def get_series_game_list(series_id: str, force_fetch: bool = False):
+    data = get_series_info(series_id, force_fetch)
 
-    else:
-        print(f'\nstarting to fetch series {series_id} game info list')
-        link = src_helper.get_series_game_info_list_url(series_id)
-        data = src_helper.request_src_list(link)
-        print(f'fetched series {series_id} game info list of size {len(data)}')
-
-        file_helper.dump_json(data, path)
-
-    return tool.create_game_info_from_data(data)
+    return tool.create_game_list_from_data(data)
 
 
 def get_series_info(series_id: str, force_fetch: bool = False):
@@ -165,7 +155,7 @@ def get_series_info(series_id: str, force_fetch: bool = False):
     
     else:
         print(f'\nstarting to fetch series data for {series_id}')
-        link = src_helper.get_series_info_url(series_id)
+        link = src_helper.get_series_extended_info_url(series_id)
         data = src_helper.request_src_list(link)
         print(f'fetched series data for {series_id}')
 
@@ -199,7 +189,7 @@ def get_game_info(game_id: str, force_fetch: bool = False):
     
     else:
         print(f'\nstarting to fetch game data for {game_id}')
-        link = src_helper.get_game_url(game_id)
+        link = src_helper.get_game_extended_info_url(game_id)
         data = src_helper.request_src(link).get('data')
         name = get_game_name(game_id)
         print(f'fetched game data for {game_id}:{name}')
@@ -242,8 +232,8 @@ def get_all_fullgame_categories(series_id: str, force_fetch: bool = False):
     for game in data:
         categories_data = game.get('categories', {}).get('data')
 
-        categories = tool.create_category_info_from_data(categories_data)
-        fullgame_categories.extend([category for category in categories if category.type == 'per-game'])
+        categories = tool.create_category_list_from_data(categories_data)
+        fullgame_categories.extend([category for category in categories if category.type == 'fullgame'])
 
     return fullgame_categories
 # endregion
