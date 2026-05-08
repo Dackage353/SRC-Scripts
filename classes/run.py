@@ -1,7 +1,7 @@
 from common import fetch_handler, file_helper, reference, src_helper, tool
 
 
-class RunInfo:
+class Run:
     def __init__(self, data):
         #ids
         self.run_id = data.get('id')
