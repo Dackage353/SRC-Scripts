@@ -1,6 +1,9 @@
 from common import fetch_handler, file_helper, reference, src_helper, tool
 from datetime import datetime, timezone
+import time
 
+
+script_start = time.perf_counter()
 
 FORCE_FETCH = False
 
@@ -54,4 +57,7 @@ if __name__ == '__main__':
     make_files_for_runs(valid_runs, 'valid_runs')
     make_files_for_runs(invalid_runs, 'invalid_runs')
     make_files_for_runs(runs, 'runs')
+    
+    script_end = time.perf_counter()
+    print(f"\nElapsed time: {script_end - script_start:.2f} seconds")
     

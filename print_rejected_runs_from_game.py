@@ -2,6 +2,8 @@ from common import fetch_handler, file_helper, reference, src_helper, tool, cons
 import time
 
 
+script_start = time.perf_counter()
+
 FORCE_FETCH = True
 GAME_ID = '9d3wnky1' #iron mario
 

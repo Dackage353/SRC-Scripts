@@ -1,6 +1,9 @@
 import pandas as pd
 from common import fetch_handler, file_helper, reference, src_helper, tool, constants
+import time
 
+
+script_start = time.perf_counter()
 
 FORCE_FETCH = False
 
@@ -44,3 +47,6 @@ if __name__ == '__main__':
 
 
     make_csv_for_fullgame_fill_counts(fullgame_set_per_user)
+    
+    script_end = time.perf_counter()
+    print(f"\nElapsed time: {script_end - script_start:.2f} seconds")

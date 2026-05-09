@@ -1,5 +1,8 @@
 from common import fetch_handler, file_helper, reference, src_helper, tool, constants
+import time
 
+
+script_start = time.perf_counter()
 
 FORCE_FETCH = False
 
@@ -18,3 +21,6 @@ if __name__ == '__main__':
 
     print('\n'.join(games_without_levels))
     print(f'\n{len(games_without_levels)} games without levels out of {len(data)}')
+    
+    script_end = time.perf_counter()
+    print(f"\nElapsed time: {script_end - script_start:.2f} seconds")

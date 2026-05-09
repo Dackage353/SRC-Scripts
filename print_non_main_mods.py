@@ -1,5 +1,8 @@
 from common import fetch_handler, file_helper, reference, src_helper, tool, constants
+import time
 
+
+script_start = time.perf_counter()
 
 FORCE_FETCH = False
 
@@ -29,3 +32,7 @@ if __name__ == '__main__':
 
         if potential_incorrect_mods:
                 print(f"{game_data['abbreviation']} has non-main mods of {potential_incorrect_mods}")
+
+    script_end = time.perf_counter()
+    print(f"\nElapsed time: {script_end - script_start:.2f} seconds")
+    

@@ -1,5 +1,8 @@
 from common import fetch_handler, file_helper, reference, src_helper, tool, constants
+import time
 
+
+script_start = time.perf_counter()
 
 FORCE_FETCH = False
 USER_ID = 'qxkrpqm8'
@@ -23,3 +26,6 @@ if __name__ == '__main__':
             print(f'{category.game_and_category_name}')
 
     print(f'\ntotal fillrate: {len(categories_filled)} / {len(fullgame_categories)}')
+    
+    script_end = time.perf_counter()
+    print(f"\nElapsed time: {script_end - script_start:.2f} seconds")

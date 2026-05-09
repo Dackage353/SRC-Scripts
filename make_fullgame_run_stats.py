@@ -1,5 +1,8 @@
 from common import fetch_handler, file_helper, reference, src_helper, tool, constants
+import time
 
+
+script_start = time.perf_counter()
 
 FORCE_FETCH = False
 
@@ -32,3 +35,6 @@ if __name__ == '__main__':
     
     all_pairs = [(category.game_id, category.id) for category in fullgame_categories]
     file_helper.make_double_sort_csv(df, f'output/{file_name} - runs per category.csv', 'game_id', 'category_id', 'game_name', 'category_name', reference.game_names, reference.category_names, all_pairs)
+    
+    script_end = time.perf_counter()
+    print(f"\nElapsed time: {script_end - script_start:.2f} seconds")
