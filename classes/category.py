@@ -38,9 +38,9 @@ class Category:
             name = self.name.lower()
 
             if name in constants.SINGLE_STAR_CATEGORIES:
-                self.type = 'single star'
+                self.type = 'single_star'
             elif name in constants.STAGE_RTA_CATEGORIES:
-                self.type = 'stage rta'
+                self.type = 'stage_rta'
             else:
                 print(f'{self.id} - non traditional per-level category name: {self.name}')
         else:
