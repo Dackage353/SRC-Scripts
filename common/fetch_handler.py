@@ -6,7 +6,7 @@ def get_series_game_names(series_id: str, force_fetch: bool = False):
     data = get_series_info(series_id, force_fetch)
     games = tool.create_game_list_from_data(data)
 
-    return [game.name_international for game in games]
+    return [game.name for game in games]
 
 
 def get_game_name(game_id: str, force_fetch: bool = False):
@@ -98,7 +98,7 @@ def get_game_run_list(game_id: str, force_fetch: bool = False):
 
         file_helper.dump_json(data, path)
 
-    return tool.create_run_info_from_data(data)
+    return tool.create_run_list_from_data(data)
 
 
 def get_category_run_list(category_id: str, force_fetch: bool = False):
@@ -117,7 +117,7 @@ def get_category_run_list(category_id: str, force_fetch: bool = False):
 
         file_helper.dump_json(data, path)
 
-    return tool.create_run_info_from_data(data)
+    return tool.create_run_list_from_data(data)
 
 
 def get_user_run_list(user_id: str, force_fetch: bool = False):
@@ -136,7 +136,7 @@ def get_user_run_list(user_id: str, force_fetch: bool = False):
 
         file_helper.dump_json(data, path)
 
-    return tool.create_run_info_from_data(data)
+    return tool.create_run_list_from_data(data)
 # endregion
 
 

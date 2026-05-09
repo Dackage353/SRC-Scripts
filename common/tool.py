@@ -29,7 +29,7 @@ def create_category_list_from_data(data):
     return [Category(d) for d in data]
 
 
-def create_run_info_from_data(data):
+def create_run_list_from_data(data):
     return [Run(d) for d in data]
 
 
