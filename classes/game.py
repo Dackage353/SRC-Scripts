@@ -8,9 +8,9 @@ class Game:
         self.data = data
 
         names = data.get('names', {})
-        self.name_international    = names.get('international')
-        self.name_japanese         = names.get('japanese')
-        self.name_twitch           = names.get('twitch')
+        self.name                 = names.get('international')
+        self.name_japanese        = names.get('japanese')
+        self.name_twitch          = names.get('twitch')
 
         self.abbreviation         = data.get('abbreviation')
         self.discord_link         = data.get('discord')
@@ -94,8 +94,16 @@ class Game:
                 else:
                     print(f'{variable_data.get('id')} - duplicate level variable {level_id}')
 
-        self.categories = [Category(category_data) for category_data in categories_data] if categories_data else None
-        self.levels = [Level(level_data, self.id, level_variables) for level_data in levels_data] if levels_data else None
+        self.categories = [Category(category_data) for category_data in categories_data] if categories_data else []
+        self.levels = [Level(level_data, self.id, level_variables) for level_data in levels_data] if levels_data else []
+
+        self.fullgame_categories = [category for category in self.categories if category.type == 'fullgame']
+        self.stage_rtas = [level for level in self.levels] if any(category.type == "stage_rta" for category in self.categories) else []
+        self.single_stars = [
+            star
+            for level in self.levels or []
+            for star in level.single_stars
+        ]
 
     def __repr__(self):
         fields = "\n  ".join(f"{k}={v!r}" for k, v in sorted(self.__dict__.items()))
