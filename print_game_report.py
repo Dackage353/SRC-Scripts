@@ -1,3 +1,4 @@
+from pathlib import Path
 from common import fetch_handler, file_helper, reference, src_helper, tool, constants
 from classes import Game
 import time
@@ -9,7 +10,10 @@ FORCE_FETCH = False
 
 
 if __name__ == '__main__':
-    with open("output.txt", "w", encoding="utf-8") as f:
+    path = Path("output/game_report.txt")
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(path, "w", encoding="utf-8") as f:
         game_data = fetch_handler.get_series_info(constants.MAIN_SERIES, FORCE_FETCH)
         game_data.extend(fetch_handler.get_series_info(constants.SECONDARY_SERIES, FORCE_FETCH))
 
